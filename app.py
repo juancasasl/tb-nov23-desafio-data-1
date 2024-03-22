@@ -15,6 +15,7 @@
 #===============================================================================================================================
 
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import pickle
 import pandas as pd
 import numpy as np
@@ -24,6 +25,7 @@ from sklearn.metrics import mean_squared_error        #Empleo el modelo que apli
 from sklearn.linear_model import LinearRegression     #Empleo el modelo que aplique 
 
 app = Flask(__name__)
+CORS(app)
 app.config["DEBUG"] = True
 
 
@@ -58,8 +60,18 @@ def predict():
         return "Error in args"
 
 # Aquí estamos haciendo la predicciones, las metricas de nuestro modelo las ponemos a parte en otra @app.route 
-    
 
+
+#============================================================================================================================== 
+#  PASO JSON CON INFORMACION SOLICITADA  
+#============================================================================================================================== 
+@app.route('/api/v1/informacion_1/', methods=['GET'])
+def paso_jayson():
+        with open('Path al archivo json.json', 'r') as prod:  #Establecer path
+        tu_info=json.load(prod)
+    return  jsonify(tu_info)
+#==============================================================================================================================
+  
 
 # comment out all app.run
 
