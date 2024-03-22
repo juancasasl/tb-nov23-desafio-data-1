@@ -26,7 +26,6 @@ from sklearn.linear_model import LinearRegression     #Empleo el modelo que apli
 
 app = Flask(__name__)
 CORS(app)
-app.config["DEBUG"] = True
 
 
 
@@ -73,11 +72,5 @@ def paso_jayson():
 #==============================================================================================================================
   
 
-# comment out all app.run
-
-# if __name__ == "__main__":
-#     print("hello")
-#     app.run(debug=False)
-
-
-# app.run()
+if __name__ == "__main__":
+    app.run(debug=True)
