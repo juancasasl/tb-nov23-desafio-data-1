@@ -22,7 +22,7 @@ import json
 
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/api/*": {"origins": ["https://develop--despliegueprueba.netlify.app", "https://otrodominio.com"]}})  # Agrega múltiples dominios a la lista blanca de CORS
 
 #===============================================================================================================================
 # Endpoint HOME 
