@@ -109,7 +109,7 @@ def predict():
 ### codigo segmentacion
 @app.route('/api/v1/segmentacion/', methods=['GET'])
 def paso_jayson():
-        with open('./json_vending_schiller_DEF.json', 'r') as prod:
+        with open('./vending_schiller_porID.json', 'r') as prod:
             file = json.load(prod)
             return jsonify(file)
 
