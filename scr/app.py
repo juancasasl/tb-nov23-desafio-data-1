@@ -108,25 +108,25 @@ def predict():
 
 ### codigo segmentacion
 @app.route('/api/v1/segmentacion/schiller/vending', methods=['GET'])
-def paso_jayson():
+def schiller_vending():
         with open('./data/vending_schiller_porID.json', 'r') as prod:
             file = json.load(prod)
             return jsonify(file)
 
 @app.route('/api/v1/segmentacion/thebridge/vending', methods=['GET'])
-def paso_jayson():
+def thebridge_vending():
         with open('./data/vending_thebridge_porID.json', 'r') as prod:
             file = json.load(prod)
             return jsonify(file)
 
 @app.route('/api/v1/segmentacion/schiller/horario', methods=['GET'])
-def paso_jayson():
+def schiller_horario():
         with open('./data/horario_clientes_densidad_schiller.json', 'r') as prod:
             file = json.load(prod)
             return jsonify(file)
 
-@app.route('/api/v1/segmentacion/schiller/horario', methods=['GET'])
-def paso_jayson():
+@app.route('/api/v1/segmentacion/thebridge/horario', methods=['GET'])
+def thebridge_horario():
         with open('./data/horario_clientes_densidad_thebridge.json', 'r') as prod:
             file = json.load(prod)
             return jsonify(file)
