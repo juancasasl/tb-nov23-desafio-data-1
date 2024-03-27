@@ -4,9 +4,6 @@
 ```bash
 .
 ├── README.md
-├── doc
 └── scr
-    ├── data
-    ├── model
-    └── notebooks
+    └── data
 ```
