@@ -107,15 +107,43 @@ def predict():
 
 
 ### codigo segmentacion
-@app.route('/api/v1/segmentacion/schiller/vending', methods=['GET'])
-def schiller_vending():
-        with open('./data/vending_schiller_porID.json', 'r') as prod:
-            file = json.load(prod)
-            return jsonify(file)
+## thebridge
 
 @app.route('/api/v1/segmentacion/thebridge/vending', methods=['GET'])
 def thebridge_vending():
         with open('./data/vending_thebridge_porID.json', 'r') as prod:
+            file = json.load(prod)
+            return jsonify(file)
+
+@app.route('/api/v1/segmentacion/thebridge/horario', methods=['GET'])
+def thebridge_horario():
+        with open('./data/horario_clientes_densidad_thebridge.json', 'r') as prod:
+            file = json.load(prod)
+            return jsonify(file)
+
+@app.route('/api/v1/segmentacion/thebridge/volumen', methods=['GET'])
+def thebridge_volumen():
+        with open('./data/volumen_compras_horarias_bridge.json', 'r') as prod:
+            file = json.load(prod)
+            return jsonify(file)
+
+@app.route('/api/v1/segmentacion/thebridge/top', methods=['GET'])
+def thebridge_top():
+        with open('./data/top3_ventas_bridge.json', 'r') as prod:
+            file = json.load(prod)
+            return jsonify(file)
+
+@app.route('/api/v1/segmentacion/thebridge/descripcion', methods=['GET'])
+def thebridge_descripcion():
+        with open('./data/descripcion_cluster_bridge.json', 'r') as prod:
+            file = json.load(prod)
+            return jsonify(file)
+
+## schiller
+
+@app.route('/api/v1/segmentacion/schiller/vending', methods=['GET'])
+def schiller_vending():
+        with open('./data/vending_schiller_porID.json', 'r') as prod:
             file = json.load(prod)
             return jsonify(file)
 
@@ -125,9 +153,21 @@ def schiller_horario():
             file = json.load(prod)
             return jsonify(file)
 
-@app.route('/api/v1/segmentacion/thebridge/horario', methods=['GET'])
-def thebridge_horario():
-        with open('./data/horario_clientes_densidad_thebridge.json', 'r') as prod:
+@app.route('/api/v1/segmentacion/schiller/volumen', methods=['GET'])
+def schiller_volumen():
+        with open('./data/volumen_compras_horarias_schiller.json', 'r') as prod:
+            file = json.load(prod)
+            return jsonify(file)
+        
+@app.route('/api/v1/segmentacion/schiller/top', methods=['GET'])
+def schiller_top():
+        with open('./data/top3_ventas_schiller.json', 'r') as prod:
+            file = json.load(prod)
+            return jsonify(file)
+        
+@app.route('/api/v1/segmentacion/schiller/descripcion', methods=['GET'])
+def schiller_descripcion():
+        with open('./data/descripcion_cluster_schiller.json', 'r') as prod:
             file = json.load(prod)
             return jsonify(file)
 
