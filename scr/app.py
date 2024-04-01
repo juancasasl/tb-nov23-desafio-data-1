@@ -101,10 +101,15 @@ def facturacion():
         else:
 
             if ubi == 'the-bridge':
-                respuesta = 'Facturacion The Bridge'
+                respuesta = {'corner': 'the-bridge',
+                            'total diario': [45, -57],
+                            'total semanal': [149, -73],
+                            'total mensual': [826, -57]}
             elif ubi == 'schiller':
-                respuesta = 'Facturacion Schiller'
-
+                respuesta = {'corner': 'schiller',
+                            'total diario': [3, -98],
+                            'total semanal': [431, -27],
+                            'total mensual': [1830, -42]}
 
             return jsonify(respuesta)
         
@@ -115,19 +120,19 @@ def facturacion():
 
 
 # ==============================================================================================================================
-# ENDPOINT 2 - PRODUCTOS-DESTACADOS   --> ( Los datos los pasamos por la URL ) [GET] )
+# ENDPOINT 2 - PRODUCTOS DESTACADOS   --> ( Los datos los pasamos por la URL ) [GET] )
 # ==============================================================================================================================
 
 """
 La petición sería tipo:
 
-http://127.0.0.1:5000/api/v1/ventas/general/productos-destacados?ubicacion=the-bridge
+http://127.0.0.1:5000/api/v1/ventas/general/productosdestacados?ubicacion=the-bridge
 o
-http://127.0.0.1:5000/api/v1/ventas/general/productos-destacados?ubicacion=schiller
+http://127.0.0.1:5000/api/v1/ventas/general/productosdestacados?ubicacion=schiller
 
 """
 
-@app.route('/api/v1/ventas/general/productos-destacados', methods = ['GET']) 
+@app.route('/api/v1/ventas/general/productosdestacados', methods = ['GET']) 
 def productos_destacados():
 
     args = request.args
@@ -140,13 +145,13 @@ def productos_destacados():
         else:
 
             if ubi == 'the-bridge':
-                respuesta = {'producto_mas_vendido': {'producto': 'pincho-de-tortilla-patatas', 'porcentaje': inf, 'unidades': 2.0}, 
-                             'producto_menos_vendido': {'producto': 'cafe-con-leche', 'porcentaje': -60.0, 'unidades': -57.0}, 
-                             'producto_estrella': {'producto': 'cafe-con-leche', 'porcentaje': 38.0, 'unidades': 699.0}}
+                respuesta = {'producto_mas_vendido': {'producto': 'pincho-de-tortilla-patatas', 'porcentaje': 566.7, 'unidades': 1.7},
+                              'producto_menos_vendido': {'producto': 'cafe-con-leche', 'porcentaje': -45.6, 'unidades': -31.9},
+                              'producto_estrella': {'producto': 'cafe-con-leche', 'porcentaje': 699.0, 'unidades': -57}}
             elif ubi == 'schiller':
-                respuesta = {'producto_mas_vendido': {'producto': 'rufles-jamon', 'porcentaje': 500.0, 'unidades': 5.0}, 
-                             'producto_menos_vendido': {'producto': 'cafe-con-leche', 'porcentaje': -66.7, 'unidades': -24.0}, 
-                             'producto_estrella': {'producto': 'cafe-con-leche', 'porcentaje': 12.0, 'unidades': 1195.0}}
+                respuesta = {'producto_mas_vendido': {'producto': 'mios-maiz', 'porcentaje': 411.4, 'unidades': 7.2},
+                              'producto_menos_vendido': {'producto': 'cafe-con-leche', 'porcentaje': -70.6, 'unidades': -28.8},
+                              'producto_estrella': {'producto': 'cafe-con-leche', 'porcentaje': 1195.0, 'unidades': -24}}
 
 
             return jsonify(respuesta)
