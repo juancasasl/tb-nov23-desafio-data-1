@@ -398,7 +398,7 @@ def schiller_descripcion():
 
 # CARGAMOS LA BBDD DE VENTAS (CONSOLIDADO)
 
-df = pd.read_csv('F:/_WORK/DATA SCIENCE/003.THE BRIDGE DS Bootcamp/2 - BOOTCAMP/_entregables Andrada/_Proyecto 04 - Desafío de Tripulaciones/Flask/consolidado.csv', index_col=0)
+df = pd.read_csv('./data/consolidado.csv', index_col=0)
 # df = pd.read_csv('/home/ubuntu/prod/endpoint/consolidado.csv', index_col=0)
 df['fecha'] = pd.to_datetime(df['fecha'], format='%Y-%m-%d %H:%M:%S')
 df['fecha'] = df['fecha'].dt.date
@@ -410,7 +410,7 @@ df_sc = df[df['ubicacion'] == 'schiller']
 
 # CARGAMOS LA BBDD DE PREDICCIONES (PREDICCIONES)
 
-df_pred = pd.read_csv('F:/_WORK/DATA SCIENCE/003.THE BRIDGE DS Bootcamp/2 - BOOTCAMP/_entregables Andrada/_Proyecto 04 - Desafío de Tripulaciones/Flask/predicciones.csv', index_col=0)
+df_pred = pd.read_csv('./data/predicciones.csv', index_col=0)
 # df = pd.read_csv('/home/ubuntu/prod/endpoint/predicciones.csv', index_col=0)
 df_pred['fecha'] = pd.to_datetime(df_pred['fecha'], format='%Y-%m-%d')
 
