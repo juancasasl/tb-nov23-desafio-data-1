@@ -12,16 +12,58 @@ import json
 ### fin import segmentacion
 
 
-#===============================================================================================================================
-#
-#       ESTE ES EL CUERPO DE LA APP DE VENTAS
-#
-#===============================================================================================================================
+
+# ==============================================================================================================================
+# Funcion que me sirve en todos los endpoints de 3 a 6
+# ==============================================================================================================================
+
+def carga_seleccion_datos(ubi):
+
+    if ubi == 'the-bridge':
+        fecha = '2024-03-12'
+        df_ventas = df_tb
+        df_predict = df_pred_tb
+        objeto_ventas =   {
+                            "2024-03-06": "0",
+                            "2024-03-07": "0",
+                            "2024-03-08": "0",
+                            "2024-03-09": "0",
+                            "2024-03-11": "0",
+                            "2024-03-12": "0"
+        }
+        objeto_predicciones =   {
+                                "2024-03-13": "0",
+                                "2024-03-14": "0",
+                                "2024-03-15": "0",
+                                "2024-03-16": "0",
+                                "2024-03-18": "0",
+                                "2024-03-19": "0"
+                            }
+    elif ubi == 'schiller':
+        fecha = '2024-03-21'
+        df_ventas = df_sc
+        df_predict = df_pred_sc
+        objeto_ventas =   {
+                            "2024-03-15": "0",
+                            "2024-03-16": "0",
+                            "2024-03-18": "0",
+                            "2024-03-19": "0",
+                            "2024-03-20": "0",
+                            "2024-03-21": "0"
+        }
+        objeto_predicciones =   {
+                                "2024-03-22": "0",
+                                "2024-03-23": "0",
+                                "2024-03-25": "0",
+                                "2024-03-26": "0",
+                                "2024-03-27": "0",
+                                "2024-03-28": "0"
+                            }
+
+    return fecha, df_ventas, df_predict, objeto_ventas, objeto_predicciones
 
 
-app = Flask(__name__)
-CORS(app)
-#CORS(app, resources={r"/api/*": {"origins": ["https://develop--despliegueprueba.netlify.app", "https://despliegueprueba.netlify.app/", "https://otrodominio.com"]}})  # Agrega múltiples dominios a la lista blanca de CORS
+
 
 #===============================================================================================================================
 # Endpoint HOME 
@@ -29,11 +71,90 @@ CORS(app)
 
 @app.route('/', methods=['GET'])
 def home():
-    return "<h1>Prueba Desafío TOTAL</h1>"
+    return "<h1>3_Prueba Desafío PREDICCION DE VENTAS</h1>"
 
 
 
-### codigo prediccion
+# ==============================================================================================================================
+# ENDPOINT 1 - FACTURACION   --> ( Los datos los pasamos por la URL ) [GET] )
+# ==============================================================================================================================
+
+"""
+La petición sería tipo:
+
+http://127.0.0.1:5000/api/v1/ventas/general/facturacion?ubicacion=the-bridge
+o
+http://127.0.0.1:5000/api/v1/ventas/general/facturacion?ubicacion=schiller
+
+"""
+
+@app.route('/api/v1/ventas/general/facturacion', methods = ['GET']) 
+def facturacion():
+
+    args = request.args
+    if 'ubicacion' in args:
+
+        ubi = args.get('ubicacion', None)
+
+        if ubi not in list(df['ubicacion'].unique()):
+            return "Error. Incorrect arguments"
+        else:
+
+            if ubi == 'the-bridge':
+                respuesta = 'Facturacion The Bridge'
+            elif ubi == 'schiller':
+                respuesta = 'Facturacion Schiller'
+
+
+            return jsonify(respuesta)
+        
+    else:
+        return "Error in args"
+
+
+
+
+# ==============================================================================================================================
+# ENDPOINT 2 - PRODUCTOS-DESTACADOS   --> ( Los datos los pasamos por la URL ) [GET] )
+# ==============================================================================================================================
+
+"""
+La petición sería tipo:
+
+http://127.0.0.1:5000/api/v1/ventas/general/productos-destacados?ubicacion=the-bridge
+o
+http://127.0.0.1:5000/api/v1/ventas/general/productos-destacados?ubicacion=schiller
+
+"""
+
+@app.route('/api/v1/ventas/general/productos-destacados', methods = ['GET']) 
+def productos_destacados():
+
+    args = request.args
+    if 'ubicacion' in args:
+
+        ubi = args.get('ubicacion', None)
+
+        if ubi not in list(df['ubicacion'].unique()):
+            return "Error. Incorrect arguments"
+        else:
+
+            if ubi == 'the-bridge':
+                respuesta = {'producto_mas_vendido': {'producto': 'pincho-de-tortilla-patatas', 'porcentaje': inf, 'unidades': 2.0}, 
+                             'producto_menos_vendido': {'producto': 'cafe-con-leche', 'porcentaje': -60.0, 'unidades': -57.0}, 
+                             'producto_estrella': {'producto': 'cafe-con-leche', 'porcentaje': 38.0, 'unidades': 699.0}}
+            elif ubi == 'schiller':
+                respuesta = {'producto_mas_vendido': {'producto': 'rufles-jamon', 'porcentaje': 500.0, 'unidades': 5.0}, 
+                             'producto_menos_vendido': {'producto': 'cafe-con-leche', 'porcentaje': -66.7, 'unidades': -24.0}, 
+                             'producto_estrella': {'producto': 'cafe-con-leche', 'porcentaje': 12.0, 'unidades': 1195.0}}
+
+
+            return jsonify(respuesta)
+        
+    else:
+        return "Error in args"
+
+
 
 # ==============================================================================================================================
 # ENDPOINT 3 - ANALITICA GENERAL   --> ( Los datos los pasamos por la URL ) [GET] )
@@ -49,7 +170,6 @@ http://127.0.0.1:5000/api/v1/ventas/general/analitica-general?ubicacion=schiller
 """
 
 @app.route('/api/v1/ventas/general/analitica-general', methods = ['GET']) 
-#['GET']: Aquí cogemos los argumentos por producto y fecha por URL con 'request.arg'
 def analitica_general():
 
     args = request.args
@@ -61,14 +181,7 @@ def analitica_general():
             return "Error. Incorrect arguments"
         else:
 
-            if ubi == 'the-bridge':
-                fecha = '2024-03-12'
-                df_ventas = df_tb
-                df_predict = df_pred_tb
-            elif ubi == 'schiller':
-                fecha = '2024-03-21'
-                df_ventas = df_sc
-                df_predict = df_pred_sc
+            fecha, df_ventas, df_predict, objeto_ventas, objeto_predicciones = carga_seleccion_datos(ubi)
 
             fecha_sep = pd.to_datetime(fecha)
             fecha_start = fecha_sep - timedelta(6)  # 2024-03-06 (TB) o 2024-03-15 (SCHILLER)
@@ -82,12 +195,10 @@ def analitica_general():
             df_predict = df_predict.groupby(pd.Grouper(key='fecha', freq='d')).sum()
             df_predict.reset_index(inplace=True)
 
-            objeto_ventas = {}
             for index, row in df_ventas.iterrows():
                 if row['fecha'].weekday() != 6:
                     objeto_ventas[row['fecha'].strftime('%Y-%m-%d')] = str(row['producto'])
             
-            objeto_predicciones = {}
             for index, row in df_predict.iterrows():
                 if row['fecha'].weekday() != 6:
                     objeto_predicciones[row['fecha'].strftime('%Y-%m-%d')] = str(row['prediccion'])
@@ -117,7 +228,6 @@ http://127.0.0.1:5000/api/v1/ventas/analitica/maquina?ubicacion=schiller&maquina
 """
 
 @app.route('/api/v1/ventas/analitica/maquina', methods = ['GET']) 
-#['GET']: Aquí cogemos los argumentos por producto y fecha por URL con 'request.arg'
 def analitica_por_maquina():
 
     args = request.args
@@ -126,47 +236,43 @@ def analitica_por_maquina():
         ubi = args.get('ubicacion', None)
         maq = args.get('maquina', None)
 
-        if (ubi not in list(df['ubicacion'].unique()))\
-            and (maq not in list(df['maquina'].unique())):
-            return "Error. Incorrect arguments"
+        if ubi in list(df['ubicacion'].unique()):
+
+            df_1 = df[df['ubicacion'] == ubi]
+            if maq in list(df_1['maquina'].unique()):
+            
+                fecha, df_ventas, df_predict, objeto_ventas, objeto_predicciones = carga_seleccion_datos(ubi)
+
+                fecha_sep = pd.to_datetime(fecha)
+                fecha_start = fecha_sep - timedelta(6)  # 2024-03-06 (TB) o 2024-03-15 (SCHILLER)
+                fecha_fin = fecha_sep + timedelta(7)    # 2024-03-19 (TB) o 2024-03-28 (SCHILLER)
+                
+                df_ventas = df_ventas[df_ventas['maquina'] == maq]
+                df_ventas = df_ventas[(df_ventas['fecha'] >= fecha_start) & (df_ventas['fecha'] <= fecha_sep + timedelta(1))]
+                df_ventas = df_ventas.groupby(pd.Grouper(key='fecha', freq='d')).count()
+                df_ventas.reset_index(inplace=True)
+
+                df_predict = df_predict[df_predict['maquina'] == maq]
+                df_predict = df_predict[(df_predict['fecha'] > fecha_sep) & (df_predict['fecha'] <= fecha_fin)]
+                df_predict = df_predict.groupby(pd.Grouper(key='fecha', freq='d')).sum()
+                df_predict.reset_index(inplace=True)
+
+                for index, row in df_ventas.iterrows():
+                    if row['fecha'].weekday() != 6:
+                        objeto_ventas[row['fecha'].strftime('%Y-%m-%d')] = str(row['producto'])
+                
+                for index, row in df_predict.iterrows():
+                    if row['fecha'].weekday() != 6:
+                        objeto_predicciones[row['fecha'].strftime('%Y-%m-%d')] = str(row['prediccion'])
+                        
+                respuesta = [{'ubicacion':ubi, 'maquina':maq}, objeto_ventas, objeto_predicciones]
+
+                return jsonify(respuesta)
+            
+            else:
+                return "Error. Incorrect arguments"
         else:
-
-            if ubi == 'the-bridge':
-                fecha = '2024-03-12'
-                df_ventas = df_tb
-                df_predict = df_pred_tb
-            elif ubi == 'schiller':
-                fecha = '2024-03-21'
-                df_ventas = df_sc
-                df_predict = df_pred_sc
-
-            fecha_sep = pd.to_datetime(fecha)
-            fecha_start = fecha_sep - timedelta(6)  # 2024-03-06 (TB) o 2024-03-15 (SCHILLER)
-            fecha_fin = fecha_sep + timedelta(7)    # 2024-03-19 (TB) o 2024-03-28 (SCHILLER)
-            
-            df_ventas = df_ventas[df_ventas['maquina'] == maq]
-            df_ventas = df_ventas[(df_ventas['fecha'] >= fecha_start) & (df_ventas['fecha'] <= fecha_sep + timedelta(1))]
-            df_ventas = df_ventas.groupby(pd.Grouper(key='fecha', freq='d')).count()
-            df_ventas.reset_index(inplace=True)
-
-            df_predict = df_predict[df_predict['maquina'] == maq]
-            df_predict = df_predict[(df_predict['fecha'] > fecha_sep) & (df_predict['fecha'] <= fecha_fin)]
-            df_predict = df_predict.groupby(pd.Grouper(key='fecha', freq='d')).sum()
-            df_predict.reset_index(inplace=True)
-
-            objeto_ventas = {}
-            for index, row in df_ventas.iterrows():
-                if row['fecha'].weekday() != 6:
-                    objeto_ventas[row['fecha'].strftime('%Y-%m-%d')] = str(row['producto'])
-            
-            objeto_predicciones = {}
-            for index, row in df_predict.iterrows():
-                if row['fecha'].weekday() != 6:
-                    objeto_predicciones[row['fecha'].strftime('%Y-%m-%d')] = str(row['prediccion'])
-                    
-            respuesta = [{'ubicacion':ubi, 'maquina':maq}, objeto_ventas, objeto_predicciones]
-
-            return jsonify(respuesta)
+                return "Error. Incorrect arguments"
         
     else:
         return "Error in args"
@@ -189,7 +295,6 @@ http://127.0.0.1:5000/api/v1/ventas/analitica/categoria?ubicacion=schiller&maqui
 """
 
 @app.route('/api/v1/ventas/analitica/categoria', methods = ['GET']) 
-#['GET']: Aquí cogemos los argumentos por producto y fecha por URL con 'request.arg'
 def analitica_por_categoria():
 
     args = request.args
@@ -199,49 +304,49 @@ def analitica_por_categoria():
         maq = args.get('maquina', None)
         cat = args.get('categoria', None)
 
-        if (ubi not in list(df['ubicacion'].unique()))\
-            and (maq not in list(df['maquina'].unique()))\
-            and (cat not in list(df['categoria'].unique())):
-            return "Error. Incorrect arguments"
-        else:
+        if ubi in list(df['ubicacion'].unique()):
 
-            if ubi == 'the-bridge':
-                fecha = '2024-03-12'
-                df_ventas = df_tb
-                df_predict = df_pred_tb
-            elif ubi == 'schiller':
-                fecha = '2024-03-21'
-                df_ventas = df_sc
-                df_predict = df_pred_sc
+            df_1 = df[df['ubicacion'] == ubi]
+            if maq in list(df_1['maquina'].unique()):
 
-            fecha_sep = pd.to_datetime(fecha)
-            fecha_start = fecha_sep - timedelta(6)  # 2024-03-06 (TB) o 2024-03-15 (SCHILLER)
-            fecha_fin = fecha_sep + timedelta(7)    # 2024-03-19 (TB) o 2024-03-28 (SCHILLER)
-            
-            df_ventas = df_ventas[(df_ventas['maquina'] == maq) & (df_ventas['categoria'] == cat)]
-            df_ventas = df_ventas[(df_ventas['fecha'] >= fecha_start) & (df_ventas['fecha'] <= fecha_sep + timedelta(1))]
-            df_ventas = df_ventas.groupby(pd.Grouper(key='fecha', freq='d')).count()
-            df_ventas.reset_index(inplace=True)
-
-            df_predict = df_predict[(df_predict['maquina'] == maq) & (df_predict['categoria'] == cat)]
-            df_predict = df_predict[(df_predict['fecha'] > fecha_sep) & (df_predict['fecha'] <= fecha_fin)]
-            df_predict = df_predict.groupby(pd.Grouper(key='fecha', freq='d')).sum()
-            df_predict.reset_index(inplace=True)
-
-            objeto_ventas = {}
-            for index, row in df_ventas.iterrows():
-                if row['fecha'].weekday() != 6:
-                    objeto_ventas[row['fecha'].strftime('%Y-%m-%d')] = str(row['producto'])
-            
-            objeto_predicciones = {}
-            for index, row in df_predict.iterrows():
-                if row['fecha'].weekday() != 6:
-                    objeto_predicciones[row['fecha'].strftime('%Y-%m-%d')] = str(row['prediccion'])
+                df_2 = df_1[df_1['maquina'] == maq]
+                if cat in list(df_2['categoria'].unique()):
                     
-            respuesta = [{'ubicacion':ubi, 'maquina':maq, 'categoria':cat}, objeto_ventas, objeto_predicciones]
+                    fecha, df_ventas, df_predict, objeto_ventas, objeto_predicciones = carga_seleccion_datos(ubi)
 
-            return jsonify(respuesta)
-        
+                    fecha_sep = pd.to_datetime(fecha)
+                    fecha_start = fecha_sep - timedelta(6)  # 2024-03-06 (TB) o 2024-03-15 (SCHILLER)
+                    fecha_fin = fecha_sep + timedelta(7)    # 2024-03-19 (TB) o 2024-03-28 (SCHILLER)
+                    
+                    df_ventas = df_ventas[(df_ventas['maquina'] == maq) & (df_ventas['categoria'] == cat)]
+                    df_ventas = df_ventas[(df_ventas['fecha'] >= fecha_start) & (df_ventas['fecha'] <= fecha_sep + timedelta(1))]
+                    df_ventas = df_ventas.groupby(pd.Grouper(key='fecha', freq='d')).count()
+                    df_ventas.reset_index(inplace=True)
+
+                    df_predict = df_predict[(df_predict['maquina'] == maq) & (df_predict['categoria'] == cat)]
+                    df_predict = df_predict[(df_predict['fecha'] > fecha_sep) & (df_predict['fecha'] <= fecha_fin)]
+                    df_predict = df_predict.groupby(pd.Grouper(key='fecha', freq='d')).sum()
+                    df_predict.reset_index(inplace=True)
+
+                    for index, row in df_ventas.iterrows():
+                        if row['fecha'].weekday() != 6:
+                            objeto_ventas[row['fecha'].strftime('%Y-%m-%d')] = str(row['producto'])
+
+                    for index, row in df_predict.iterrows():
+                        if row['fecha'].weekday() != 6:
+                            objeto_predicciones[row['fecha'].strftime('%Y-%m-%d')] = str(row['prediccion'])
+                            
+                    respuesta = [{'ubicacion':ubi, 'maquina':maq, 'categoria':cat}, objeto_ventas, objeto_predicciones]
+
+                    return jsonify(respuesta)
+                
+                else:
+                    return "Error. Incorrect arguments"
+            else:
+                return "Error. Incorrect arguments"
+        else:
+            return "Error. Incorrect arguments"
+
     else:
         return "Error in args"
     
@@ -263,7 +368,6 @@ http://127.0.0.1:5000/api/v1/ventas/analitica/producto?ubicacion=schiller&maquin
 """
 
 @app.route('/api/v1/ventas/analitica/producto', methods = ['GET']) 
-#['GET']: Aquí cogemos los argumentos por producto y fecha por URL con 'request.arg'
 def analitica_por_producto():
 
     args = request.args
@@ -274,50 +378,53 @@ def analitica_por_producto():
         cat = args.get('categoria', None)
         prod = args.get('producto', None)
 
-        if (ubi not in list(df['ubicacion'].unique()))\
-            and (maq not in list(df['maquina'].unique()))\
-            and (cat not in list(df['categoria'].unique()))\
-            and (prod not in list(df['producto'].unique())):
-            return "Error. Incorrect arguments"
+        if ubi in list(df['ubicacion'].unique()):
+
+            df_1 = df[df['ubicacion'] == ubi]
+            if maq in list(df_1['maquina'].unique()):
+
+                df_2 = df_1[df_1['maquina'] == maq]
+                if cat in list(df_2['categoria'].unique()):
+
+                    df_3 = df_2[df_2['categoria'] == cat]
+                    if prod in list(df_3['producto'].unique()):
+
+                        fecha, df_ventas, df_predict, objeto_ventas, objeto_predicciones = carga_seleccion_datos(ubi)
+
+                        fecha_sep = pd.to_datetime(fecha)
+                        fecha_start = fecha_sep - timedelta(6)  # 2024-03-06 (TB) o 2024-03-15 (SCHILLER)
+                        fecha_fin = fecha_sep + timedelta(7)    # 2024-03-19 (TB) o 2024-03-28 (SCHILLER)
+                        
+                        df_ventas = df_ventas[(df_ventas['maquina'] == maq) & (df_ventas['categoria'] == cat) & (df_ventas['producto'] == prod)]
+                        df_ventas = df_ventas[(df_ventas['fecha'] >= fecha_start) & (df_ventas['fecha'] <= fecha_sep + timedelta(1))]
+                        df_ventas = df_ventas.groupby(pd.Grouper(key='fecha', freq='d')).count()
+                        df_ventas.reset_index(inplace=True)
+
+                        df_predict = df_predict[(df_predict['maquina'] == maq) & (df_predict['categoria'] == cat) & (df_predict['producto'] == prod)]
+                        df_predict = df_predict[(df_predict['fecha'] > fecha_sep) & (df_predict['fecha'] <= fecha_fin)]
+                        df_predict = df_predict.groupby(pd.Grouper(key='fecha', freq='d')).sum()
+                        df_predict.reset_index(inplace=True)
+
+                        for index, row in df_ventas.iterrows():
+                            if row['fecha'].weekday() != 6:
+                                objeto_ventas[row['fecha'].strftime('%Y-%m-%d')] = str(row['producto'])
+
+                        for index, row in df_predict.iterrows():
+                            if row['fecha'].weekday() != 6:
+                                objeto_predicciones[row['fecha'].strftime('%Y-%m-%d')] = str(row['prediccion'])
+                                
+                        respuesta = [{'ubicacion':ubi, 'maquina':maq, 'categoria':cat, 'producto':prod}, objeto_ventas, objeto_predicciones]
+
+                        return jsonify(respuesta)
+
+                    else:
+                        return "Error. Incorrect arguments"
+                else:
+                    return "Error. Incorrect arguments"
+            else:
+                return "Error. Incorrect arguments"
         else:
-
-            if ubi == 'the-bridge':
-                fecha = '2024-03-12'
-                df_ventas = df_tb
-                df_predict = df_pred_tb
-            elif ubi == 'schiller':
-                fecha = '2024-03-21'
-                df_ventas = df_sc
-                df_predict = df_pred_sc
-
-            fecha_sep = pd.to_datetime(fecha)
-            fecha_start = fecha_sep - timedelta(6)  # 2024-03-06 (TB) o 2024-03-15 (SCHILLER)
-            fecha_fin = fecha_sep + timedelta(7)    # 2024-03-19 (TB) o 2024-03-28 (SCHILLER)
-            
-            df_ventas = df_ventas[(df_ventas['maquina'] == maq) & (df_ventas['categoria'] == cat) & (df_ventas['producto'] == prod)]
-            df_ventas = df_ventas[(df_ventas['fecha'] >= fecha_start) & (df_ventas['fecha'] <= fecha_sep + timedelta(1))]
-            df_ventas = df_ventas.groupby(pd.Grouper(key='fecha', freq='d')).count()
-            df_ventas.reset_index(inplace=True)
-
-            df_predict = df_predict[(df_predict['maquina'] == maq) & (df_predict['categoria'] == cat) & (df_predict['producto'] == prod)]
-            df_predict = df_predict[(df_predict['fecha'] > fecha_sep) & (df_predict['fecha'] <= fecha_fin)]
-            df_predict = df_predict.groupby(pd.Grouper(key='fecha', freq='d')).sum()
-            df_predict.reset_index(inplace=True)
-
-            objeto_ventas = {}
-            for index, row in df_ventas.iterrows():
-                if row['fecha'].weekday() != 6:
-                    objeto_ventas[row['fecha'].strftime('%Y-%m-%d')] = str(row['producto'])
-            
-            objeto_predicciones = {}
-            for index, row in df_predict.iterrows():
-                if row['fecha'].weekday() != 6:
-                    objeto_predicciones[row['fecha'].strftime('%Y-%m-%d')] = str(row['prediccion'])
-                    
-            respuesta = [{'ubicacion':ubi, 'maquina':maq, 'categoria':cat, 'producto':prod}, objeto_ventas, objeto_predicciones]
-
-            return jsonify(respuesta)
-        
+            return "Error. Incorrect arguments"
     else:
         return "Error in args"
     
