@@ -11,6 +11,9 @@ from datetime import datetime, timedelta
 import json
 ### fin import segmentacion
 
+app = Flask(__name__)
+CORS(app)
+#CORS(app, resources={r"/api/*": {"origins": ["https://develop--despliegueprueba.netlify.app", "https://despliegueprueba.netlify.app/", "https://otrodominio.com"]}})  # Agrega múltiples dominios a la lista blanca de CORS
 
 
 # ==============================================================================================================================
@@ -71,7 +74,7 @@ def carga_seleccion_datos(ubi):
 
 @app.route('/', methods=['GET'])
 def home():
-    return "<h1>3_Prueba Desafío PREDICCION DE VENTAS</h1>"
+    return "<h1>Prueba Desafío TOTAL</h1>"
 
 
 
