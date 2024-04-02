@@ -105,14 +105,14 @@ def facturacion():
 
             if ubi == 'the-bridge':
                 respuesta = {'corner': 'the-bridge',
-                            'total diario': [45, -57],
-                            'total semanal': [149, -73],
-                            'total mensual': [826, -57]}
+                            'total_diario': [45, -57],
+                            'total_semanal': [149, -73],
+                            'total_mensual': [826, -57]}
             elif ubi == 'schiller':
                 respuesta = {'corner': 'schiller',
-                            'total diario': [3, -98],
-                            'total semanal': [431, -27],
-                            'total mensual': [1830, -42]}
+                            'total_diario': [3, -98],
+                            'total_semanal': [431, -27],
+                            'total_mensual': [1830, -42]}
 
             return jsonify(respuesta)
         
@@ -211,7 +211,9 @@ def analitica_general():
                 if row['fecha'].weekday() != 6:
                     objeto_predicciones[row['fecha'].strftime('%Y-%m-%d')] = str(row['prediccion'])
                     
-            respuesta = [{'ubicacion':ubi}, objeto_ventas, objeto_predicciones]
+            respuesta = {'info':{'ubicacion':ubi}, 
+                         'semana':objeto_ventas, 
+                         'prediccion':objeto_predicciones}
 
             return jsonify(respuesta)
         
@@ -273,8 +275,10 @@ def analitica_por_maquina():
                     if row['fecha'].weekday() != 6:
                         objeto_predicciones[row['fecha'].strftime('%Y-%m-%d')] = str(row['prediccion'])
                         
-                respuesta = [{'ubicacion':ubi, 'maquina':maq}, objeto_ventas, objeto_predicciones]
-
+                respuesta = {'info':{'ubicacion':ubi, 'maquina':maq},
+                            'semana':objeto_ventas, 
+                            'prediccion':objeto_predicciones}
+                
                 return jsonify(respuesta)
             
             else:
@@ -344,8 +348,10 @@ def analitica_por_categoria():
                         if row['fecha'].weekday() != 6:
                             objeto_predicciones[row['fecha'].strftime('%Y-%m-%d')] = str(row['prediccion'])
                             
-                    respuesta = [{'ubicacion':ubi, 'maquina':maq, 'categoria':cat}, objeto_ventas, objeto_predicciones]
-
+                    respuesta = {'info':{'ubicacion':ubi, 'maquina':maq, 'categoria':cat},
+                                'semana':objeto_ventas, 
+                                'prediccion':objeto_predicciones}
+                    
                     return jsonify(respuesta)
                 
                 else:
@@ -421,7 +427,9 @@ def analitica_por_producto():
                             if row['fecha'].weekday() != 6:
                                 objeto_predicciones[row['fecha'].strftime('%Y-%m-%d')] = str(row['prediccion'])
                                 
-                        respuesta = [{'ubicacion':ubi, 'maquina':maq, 'categoria':cat, 'producto':prod}, objeto_ventas, objeto_predicciones]
+                        respuesta = {'info':{'ubicacion':ubi, 'maquina':maq, 'categoria':cat, 'producto':prod},
+                                    'semana':objeto_ventas, 
+                                    'prediccion':objeto_predicciones}
 
                         return jsonify(respuesta)
 
